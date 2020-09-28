@@ -1,0 +1,78 @@
+{
+    "name": "nodejs-blueprint",
+    "version": "0.0.1-SNAPSHOT",
+    "description": "Blueprint for node web app",
+    "license": "UNLICENSED",
+    "cacheDirectories": [
+        "node_modules"
+    ],
+    "main": "./dist/app/index.js",
+    "types": "./dist/app/index.d.ts",
+    "files": [
+        "dist/",
+        "src/",
+        "test/"
+    ],
+    "dependencies": {
+        "typescript": "^4.0.3"
+    },
+    "devDependencies": {
+        "@babel/core": "^7.11.6",
+        "@babel/preset-env": "^7.11.5",
+        "@babel/preset-typescript": "^7.10.4",
+        "@types/jest": "^26.0.14",
+        "@typescript-eslint/eslint-plugin": "^4.2.0",
+        "@typescript-eslint/eslint-plugin-tslint": "^4.2.0",
+        "@typescript-eslint/parser": "^4.2.0",
+        "babel-jest": "^26.3.0",
+        "commitizen": "^4.2.1",
+        "conventional-changelog-cli": "^2.1.0",
+        "cz-conventional-changelog": "^3.3.0",
+        "eslint": "^7.9.0",
+        "eslint-config-prettier": "^6.12.0",
+        "husky": "^4.3.0",
+        "jest": "^26.4.2",
+        "nodemon": "^2.0.4",
+        "npm-run-all": "^4.1.5",
+        "prettier": "2.1.2",
+        "ts-jest": "^26.4.0",
+        "ts-node": "^9.0.0",
+        "typedoc": "^0.19.2"
+    },
+    "engines": {
+        "node": ">8.9.0"
+    },
+    "scripts": {
+        "build": "yarn run clean && tsc -p tsconfig.build.json",
+        "build:prod": "NODE_ENV=production yarn run build",
+        "start": "node dist/main.js",
+        "start:dev": "nodemon --watch src -e ts,tsx --exec ts-node src/main.ts",
+        "clean": "rimraf dist",
+        "prettier:format": "prettier --write \"{,src/**/}*.{md,json,ts,tsx,css,scss}\"",
+        "lint": "eslint src/ --ext .js,.ts,.tsx",
+        "jest": "jest --coverage --logHeapUsage --maxWorkers=2 --config test/jest.config.js",
+        "test": "jest",
+        "precommit": "npm run prettier:format",
+        "commit": "git-cz",
+        "doc": "typedoc --out dist/docs/src/ --readme ./README.md",
+        "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s",
+        "prepush": "npm-run-all lint test",
+        "preversion": "yarn run test",
+        "version": "npm-run-all clean build doc changelog createCommit",
+        "createCommit": "git add . & git commit -m 'changelogupdate' --no-verify",
+        "postversion": "git add . & git push & git push --tags"
+    },
+    "config": {
+        "commitizen": {
+            "path": "./node_modules/cz-conventional-changelog"
+        }
+    },
+    "husky": {
+        "hooks": {
+            "pre-commit": "lint-staged"
+        }
+    },
+    "lint-staged": {
+        "**/*": "prettier --write --ignore-unknown"
+    }
+}
